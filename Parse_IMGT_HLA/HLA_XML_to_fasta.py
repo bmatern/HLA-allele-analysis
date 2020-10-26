@@ -541,7 +541,7 @@ if __name__=='__main__':
         print('Input:' + inputFileName + '\nOutput:' + outputDirectory)
         print('Just a second...')
 
-        '''
+
         if not os.path.isdir(outputDirectory):
             os.mkdir(outputDirectory)
 
@@ -577,7 +577,7 @@ if __name__=='__main__':
         # Make a groupwise reference consensus.
         
         #combineGroupConsensusIntoReference(outputDirectory)
-        '''
+
         print('Done.  Ben did a great job.')
 
     except Exception:

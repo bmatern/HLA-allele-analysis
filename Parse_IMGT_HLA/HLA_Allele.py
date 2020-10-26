@@ -16,15 +16,15 @@
 import os
 import time
 from Bio.Seq import Seq
-from Bio.Alphabet import IUPAC
+#from Bio.Alphabet import IUPAC
 from Bio import SeqIO
 
 def seqForwardComplement(s):
-    origSeq = Seq(s, IUPAC.ambiguous_dna)
+    origSeq = Seq(s)
     return str(origSeq.complement())
 
 def seqReverseComplement(s):    
-    origSeq = Seq(s, IUPAC.ambiguous_dna)
+    origSeq = Seq(s)
     return str(origSeq.reverse_complement())
 
 def seqReverse(s):
@@ -253,7 +253,10 @@ class HLA_Allele:
         sequenceList = alleleNode.findall('{http://hla.alleles.org/xml}sequence')
         
         # Is it really just one?
-        if (len(sequenceList) != 1):
+        if (len(sequenceList) == 0):
+            print( 'WARNING: Zero sequences for the allele '+ str(self.alleleName))
+            #raise Exception('Zero sequence node found for an allele.' + str(self.alleleName))
+        elif (len(sequenceList) > 1):
             print( 'Error: More than one sequence node found, thats strange:' + str(len(sequenceList)))
             raise Exception('More than one sequence node found for an allele.' + str(self.alleleName))
 
@@ -310,12 +313,12 @@ class HLA_Allele:
                                 featureStart = int(coordinate.get('start')) - 1
                                 featureEnd = int(coordinate.get('end'))
                                 
-                                print('Storing this feature:' + str(featureName) + ' which is located here:(' + str(featureStart) + ':' + str(featureEnd) + ')')
+                                #print('Storing this feature:' + str(featureName) + ' which is located here:(' + str(featureStart) + ':' + str(featureEnd) + ')')
                               
                                 
                                 featureSequence = self.sequence[featureStart:featureEnd]
                                 
-                                print('sequence=' + featureSequence)
+                                #print('sequence=' + featureSequence)
                                 #TODO: this is broken.  Parse the features better.  Done I think.
                                 
                                 self.featuresInFullSequence[featureName] = featureSequence
