@@ -379,9 +379,9 @@ def combineGroupConsensusIntoReference(outputDirectory):
             
         except Exception:
             print ('Unexpected problem when creating HLA Reference for ' + consensusName)
-            print sys.exc_info()[0]
-            print sys.exc_info()[1]
-            print sys.exc_info()[2]
+            print(sys.exc_info()[0])
+            print(sys.exc_info()[1])
+            print(sys.exc_info()[2])
 
 
 def generateIntron2Consensus(alleleFullList, outputDirectory):
@@ -540,7 +540,8 @@ if __name__=='__main__':
         print('*** Generating a Fasta reference file from a IMGT HLA XML. ***')
         print('Input:' + inputFileName + '\nOutput:' + outputDirectory)
         print('Just a second...')
-        
+
+        '''
         if not os.path.isdir(outputDirectory):
             os.mkdir(outputDirectory)
 
@@ -576,12 +577,12 @@ if __name__=='__main__':
         # Make a groupwise reference consensus.
         
         #combineGroupConsensusIntoReference(outputDirectory)
-
+        '''
         print('Done.  Ben did a great job.')
 
     except Exception:
         # Top Level exception handling like a pro.
         # This is not really doing anything.
-        print 'Unexpected problem during execution:'
-        print sys.exc_info()[1]
+        print('Unexpected problem during execution:')
+        print(sys.exc_info()[1])
         raise
