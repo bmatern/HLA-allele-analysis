@@ -283,6 +283,43 @@ def performClustalWAlignmentsForGroupwiseReference(outputDirectory, alleleFullLi
 
 
 # Output Allele information in Fasta format.
+def printFullLengthAlleles(outputDirectory=None, alleleList=None):
+    fullLengthOutputFileName = join(outputDirectory, 'HLA_Alleles_Full_Length.fasta')
+    fullLengthSummaryFileName  = join(outputDirectory, 'HLA_Alleles_Full_Length_Summary.csv')
+    fullLengthOutputFile = createOutputFile(fullLengthOutputFileName)
+    fullLengthSummaryFile = createOutputFile(fullLengthSummaryFileName)
+
+    fullLengthSummaryFile.write('Allele,Features,Sequence_Length\n')
+    for currentAllele in alleleList:
+        fastaHeader = str(currentAllele.getFastaHeader(False))
+        fastaSequenceText = str(currentAllele.getFastaSequence(False))
+
+        # The feature lists are in full-length. here's a hack to see if it's full length
+        # 8, 7, or 6 exons. Would we "ever" expect 9 or 5? Without strange splicing i think not..
+        if(fastaHeader.endswith('(3UTR, 5UTR, EX_1, EX_2, EX_3, EX_4, EX_5, EX_6, EX_7, EX_8, IN_1, IN_2, IN_3, IN_4, IN_5, IN_6, IN_7)')
+            or fastaHeader.endswith('(3UTR, 5UTR, EX_1, EX_2, EX_3, EX_4, EX_5, EX_6, EX_7, IN_1, IN_2, IN_3, IN_4, IN_5, IN_6)')
+            or fastaHeader.endswith('(3UTR, 5UTR, EX_1, EX_2, EX_3, EX_4, EX_5, EX_6, IN_1, IN_2, IN_3, IN_4, IN_5)')
+            or 1==0):
+
+            fullLengthOutputFile.write('>' + fastaHeader + '\n')
+            fullLengthOutputFile.write(fastaSequenceText + '\n')
+
+            try:
+
+                alleleTokens=fastaHeader.split('(')
+                alleleName=alleleTokens[0].strip().replace('<','')
+                alleleFeatures=alleleTokens[1].strip().replace(')','').replace(' ','').replace(',',';')
+
+                fullLengthSummaryFile.write(alleleName + ',' + alleleFeatures + ',' + str(len(fastaSequenceText)) + '\n')
+            except Exception as e:
+                print('WARNING: Could not parse the header for this fasta header:' + str(fastaHeader))
+                #raise(e)
+
+    fullLengthOutputFile.close()
+    fullLengthSummaryFile.close()
+
+
+
 def printAlleleGroupsAndInfo(alleleFullList, outputDirectory):
     print ('Creating a fasta reference for all HLA Alleles:' + join(outputDirectory, 'HLA_Alleles.fasta') )
 
@@ -343,6 +380,8 @@ def printAlleleGroupsAndInfo(alleleFullList, outputDirectory):
             printFasta([alleleGroup.Alleles[0]], outputGroupFileName, True)
 
     alleleInfoOutputFile.close()
+
+    printFullLengthAlleles(outputDirectory=outputDirectory, alleleList=alleleList)
 
 # Combine the consensus sequences into an HLA Groupwise Reference
 def combineGroupConsensusIntoReference(outputDirectory):
@@ -575,7 +614,6 @@ if __name__=='__main__':
         #performClustalWAlignmentsForGroupwiseReference(outputDirectory, alleleList, True)
         
         # Make a groupwise reference consensus.
-        
         #combineGroupConsensusIntoReference(outputDirectory)
 
         print('Done.  Ben did a great job.')
